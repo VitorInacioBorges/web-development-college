@@ -1,0 +1,26 @@
+{
+  "name": "web-development-college",
+  "version": "1.0.0",
+  "description": "web development classes and practice exercises in college",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "class1": "node --watch ./classes/class1/app.js",
+    "class2": "node --watch ./classes/class2/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VitorInacioBorges/web-development-college.git"
+  },
+  "keywords": [],
+  "author": "Vitor Inacio Borges",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/VitorInacioBorges/web-development-college/issues"
+  },
+  "homepage": "https://github.com/VitorInacioBorges/web-development-college#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}
