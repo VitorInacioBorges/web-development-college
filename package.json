@@ -21,6 +21,7 @@
   },
   "homepage": "https://github.com/VitorInacioBorges/web-development-college#readme",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "joi": "^18.2.3"
   }
 }
