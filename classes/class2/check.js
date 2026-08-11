@@ -1,10 +1,8 @@
-// import joi lib
+// Import Joi library
 import Joi from "joi";
+import { messages } from "./messages.js";
 
-// Joi object
-const Joi = require("joi");
-
-// Validates CPF (Physical Person Registering)
+// Validates CPF
 const validaCpfCalculo = (value) => {
   const cpf = value.replace(/[^\d]+/g, "");
   if (cpf.length !== 11 || /^(\d)\1+$/.test(cpf)) return false;
@@ -30,17 +28,16 @@ const validaCpfCalculo = (value) => {
   return true;
 };
 
-// User Validation Object
-export const userValidate = Joi.object({
-  user_id: Joi.number().integer().min(0),
+const userFields = {
+  user_id: Joi.number().integer().min(0).strip(),
 
-  name: Joi.string().alphanum().min(3).max(30).required(),
+  name: Joi.string().alphanum().min(3).max(30).trim().required(),
 
   cpf: Joi.string()
     .required()
     .custom((value, helpers) => {
       if (!validaCpfCalculo(value)) {
-        return helpers.message("O CPF informado é inválido.");
+        return helpers.message(messages.invalidCpf);
       }
 
       return value;
@@ -54,14 +51,10 @@ export const userValidate = Joi.object({
     .required(),
 
   password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).required(),
-})
-  .with("username", "birth_year")
-  .xor("password", "access_token")
-  .with("password", "repeat_password");
+};
 
-// Book Validation Object
-export const bookValidate = Joi.object({
-  book_id: Joi.number().integer().min(0),
+const bookFields = {
+  book_id: Joi.number().integer().min(0).strip(),
 
   title: Joi.string().alphanum().min(3).max(50).required(),
 
@@ -70,10 +63,33 @@ export const bookValidate = Joi.object({
   edition: Joi.number().integer().min(1).required(),
 
   year: Joi.number().integer().min(1900).max(2026).required(),
-})
-  .with("username", "birth_year")
-  .xor("password", "access_token")
-  .with("password", "repeat_password");
+};
+
+// User Validation Objects
+export const userValidate = Joi.object({
+  ...userFields,
+  user_id: Joi.number().integer().min(0),
+});
+
+export const userUpdateValidate = Joi.object(userFields);
+
+export const userPatchValidate = Joi.object(userFields).fork(
+  ["name", "cpf", "email", "password"],
+  (schema) => schema.optional(),
+).min(1);
+
+// Book Validation Objects
+export const bookValidate = Joi.object({
+  ...bookFields,
+  book_id: Joi.number().integer().min(0),
+});
+
+export const bookUpdateValidate = Joi.object(bookFields);
+
+export const bookPatchValidate = Joi.object(bookFields).fork(
+  ["title", "isbn", "edition", "year"],
+  (schema) => schema.optional(),
+).min(1);
 
 // Rent Validation Object
 export const rentValidate = Joi.object({
@@ -82,7 +98,4 @@ export const rentValidate = Joi.object({
   book_id: Joi.number().integer().min(0).required(),
 
   status: Joi.bool().required(),
-})
-  .with("username", "birth_year")
-  .xor("password", "access_token")
-  .with("password", "repeat_password");
+});
